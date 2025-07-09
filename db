@@ -1,0 +1,52 @@
+postgresql is used as the database for this project.
+
+CREATE TABLE IF NOT EXISTS public.attendance
+(
+    id serial,
+    classes_id integer NOT NULL,
+    user_id integer NOT NULL,
+    join_time timestamp without time zone,
+    leave_time timestamp without time zone,
+    createdat timestamp without time zone NOT NULL DEFAULT now(),
+    updatedat timestamp without time zone NOT NULL DEFAULT now()
+)
+
+CREATE TABLE IF NOT EXISTS public.class_room
+(
+    id serial,
+    class_name character varying COLLATE pg_catalog."default" NOT NULL,
+    createdat timestamp without time zone NOT NULL DEFAULT now(),
+    updatedat timestamp without time zone NOT NULL DEFAULT now()
+)
+
+CREATE TABLE IF NOT EXISTS public.classes
+(
+    id serial,
+    start_time timestamp without time zone,
+    end_time timestamp without time zone,
+    createdat timestamp without time zone NOT NULL DEFAULT now(),
+    updatedat timestamp without time zone NOT NULL DEFAULT now(),
+    is_started boolean,
+    class_room_id integer NOT NULL,
+    class_name character varying COLLATE pg_catalog."default"
+)
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id serial,
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    user_type character varying COLLATE pg_catalog."default",
+    createdat timestamp without time zone NOT NULL DEFAULT now(),
+    updatedat timestamp without time zone NOT NULL DEFAULT now()
+)
+
+insert into class_room(class_name) values('ROOM1')
+
+
+SELECT u.name,u.user_type, crm.class_name,cls.id,cls.start_time,cls.end_time ,a.join_time,a.leave_time
+FROM attendance a
+JOIN classes cls ON a.classes_id = cls.id
+JOIN class_room crm ON crm.id = cls.class_room_id
+JOIN users u ON a.user_id = u.id
+WHERE crm.id = 1;
+
